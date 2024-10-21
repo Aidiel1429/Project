@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MemberTb {
+  id          Int        @id @default(autoincrement())
+  namaLengkap String
+  email       String     @unique
+  password    String
+  role        String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  UlasanTb    UlasanTb[]
+}
+
+model ProdukTb {
+  id         Int      @id @default(autoincrement())
+  kodeProduk String
+  nama       String
+  kategoriId Int
+  stok       Int
+  warna      String[]
+  ukuran     String[]
+  brand      String
+  hargaModal String
+  hargaJual  String
+  deskripsi  String
+  gambarUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  KategoriTb KategoriTb @relation(fields: [kategoriId], references: [id], onDelete: Cascade)
+  UlasanTb   UlasanTb[]
+}
+
+model KategoriTb {
+  id        Int        @id @default(autoincrement())
+  nama      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  ProdukTb  ProdukTb[]
+}
+
+model UlasanTb {
+  id        Int      @id @default(autoincrement())
+  memberId  Int
+  produkId  Int
+  rating    Int
+  komentar  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member MemberTb @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  produk ProdukTb @relation(fields: [produkId], references: [id], onDelete: Cascade)
+}
+
+model carouselTb {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
